@@ -31,6 +31,7 @@ app.get("/products", (req, res) => {
                 "seller",
                 "imageUrl",
                 "createdAt",
+                "soldout"
             ],
         }
     )
@@ -92,6 +93,28 @@ app.get("/products/:id", (req, res) => {
             res.status(400).send("상품조회 중 에러 발생");
         });
 });
+app.post("/purchase/:id", (req, res)=>{
+    const {id} = req.params;
+    models.Product.update(
+        {
+            soldout:1
+        },
+        {
+            where:{
+                id,
+            }
+        }
+    )
+    .then((result)=>{
+        res.send({
+            result:true,
+        })
+    })
+    .catch((error)=>{
+        console.error(error);
+        res.status(500).send('에러 발생')
+    })
+})
 
 app.post("/image", upload.single("image"), (req, res) => {
     const file = req.file;
